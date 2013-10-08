@@ -1,5 +1,4 @@
 require 'nngraph'
-require 'mathx'
 require 'nndx'
 
 local function t1()
@@ -9,16 +8,10 @@ local function t1()
 	-- does not need to have a dimension, but it must be a tensor...
 	local bogus = torch.Tensor()  
 	
-    -- a Gaussian distribution
-    local dist = mathx.GaussianMatrix({dimVisible = d, varianceModel = 'pixel+samplewise', naturalgradient=true})
-    local mode = 'MEAN'
-    
-	-- classical construction (no input needed)
+    -- classical construction (no input needed)
 	local ssnet = nndx.Constant({1, 2*d})
-	ssnet:getParameters():copy(torch.linspace(0,1,2*d))
-   	local distrnet = nndx.Distribution2NN(dist, mode)
+   	local distrnet = nn.Linear(2*d, d)
    	local net = nn.Sequential():add(ssnet):add(distrnet)
-    print('p1', (net:getParameters()))
     
     -- backward pass needs the bogus tensor, forward does not
     print('f1', net:forward())
